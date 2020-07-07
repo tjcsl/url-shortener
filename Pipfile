@@ -8,6 +8,7 @@ django = "*"
 psycopg2 = "*"
 social-auth-app-django = "*"
 gunicorn = "*"
+nanoid = "*"
 
 [dev-packages]
 flake8 = "~=3.8.2"

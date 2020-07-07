@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'shortener.apps.auth.apps.AuthConfig',
+    'shortener.apps.urls.apps.UrlsConfig',
 ]
 
 MIDDLEWARE = [
