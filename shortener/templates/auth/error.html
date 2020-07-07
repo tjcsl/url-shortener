@@ -1,10 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Tiny: Server Error{% endblock %}
+{% block header %} Home {% endblock %}
+{% block main %}
+    <h3>Something Unexpected Occurred!</h3>
+    <h5>
+        There was a problem when trying to authenticate you.
+    </h5>
+    <p>
+        Please try again later or contact <a href="mailto:{{ settings.DEVELOPER_EMAIL }}">{{ settings.DEVELOPER_EMAIL }}</a> if this persists.
+    </p>
+    <a href="{% url 'auth:index' %}">Go Home</a>
+    <br>
+{% endblock %}

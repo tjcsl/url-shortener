@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Tiny: Confirm Delete{% endblock %}
+{% block main %}
+    <div class="centered">
+        <form method="post">
+            {% csrf_token %}
+            <p>Are you sure you want to delete URL:<br> {{ request.is_secure|yesno:"https,http" }}://{{ request.get_host }}/{{ object.slug }} (points to {{ object.url }})?</p>
+            <input type="submit" value="I'm sure delete this URL">
+        </form>
+    </div>
+{% endblock %}

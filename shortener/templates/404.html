@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Tiny: Resource Not Found{% endblock %}
+{% block main %}
+    <h3>Not Found</h3>
+    <h4>The requested resource could not be found</h4>
+    <a href="{% url 'auth:index' %}">Go Home</a>
+    <br>
+{% endblock %}

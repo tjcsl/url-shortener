@@ -1,10 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Tiny: Login{% endblock %}
 
-</body>
-</html>
+{% block main %}
+  <div class="centered">
+    <form action="{% url 'social:begin' 'ion' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}" method="POST">
+      {% csrf_token %}
+      <input type="submit" value="Login with Ion" />
+    </form>
+  </div>
+{% endblock %}

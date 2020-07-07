@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Othello: Previous Tournaments{% endblock %}
+{% block head %}
+    <link href="{% static 'css/tournaments/tables.css' %}" type="text/css" rel="stylesheet">
+    <style>
+        .pagination li{
+            margin: 0 5px;
+        }
+    </style>
+{% endblock %}
+{% block main %}
+    {% if not page_obj %}
+        <h5>You have not created any URLs yet</h5>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>URL</th>
+                        <th>Short URL</th>
+                        <th>Destination URL</th>
+                        <th>Delete?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for url in page_obj %}
+                    <tr>
+                        <td>{{ url.id }}</td>
+                        <td>
+                            <a href="{{ request.is_secure|yesno:"https,http" }}://{{ request.get_host }}/{{ url.slug }}">
+                               {{ request.is_secure|yesno:"https,http" }}://{{ request.get_host }}/{{ url.slug }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{ url.url }}">{{ url.url }}</a>
+                        </td>
+                        <td>
+                            <a href="{% url 'urls:delete' url.id %}">Delete URL</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if page_obj.has_other_pages %}
+                <ul class="pagination">
+                    <li><a href="?page=1">&laquo;First</a></li>
+                    {% if page_obj.has_previous %}
+                        <li><a href="?page={{ page_obj.previous_page_number }}">&lsaquo;Previous</a></li>
+                    {% endif %}
+                    {% if page_obj.has_next %}
+                        <li><a href="?page={{ page_obj.next_page_number }}">Next&rsaquo;</a></li>
+                    {% endif %}
+                    <li><a href="?page={{ page_obj.paginator.num_pages }}">Last&raquo;</a></li>
+                </ul>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

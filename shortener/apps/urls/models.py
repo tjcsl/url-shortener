@@ -8,6 +8,8 @@ class URL(models.Model):
     slug = models.SlugField()
     url = models.URLField()
 
+    visits = models.IntegerField(default=0)
+
     created_at = models.DateTimeField(default=now)
     created_by = models.ForeignKey(get_user_model(), on_delete=models.PROTECT, related_name="urls")
 

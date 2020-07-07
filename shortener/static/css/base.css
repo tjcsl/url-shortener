@@ -1,0 +1,143 @@
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
+
+body {
+  font-family: 'Roboto Mono', monospace;
+}
+
+html, body {
+    line-height: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    margin-left: 10px;
+    flex-grow: 1;
+    position: relative;
+}
+
+.navbar-container{
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    display: flex;
+}
+
+.navbar {
+    width: 100%;
+    background-color: #EE6123; /* 805229 nav brown */
+    font-size: 20px;
+    color: #fffff0;
+}
+
+.navbar a{
+    color: white
+}
+
+.dropdown-menu {
+    right: 0 !important;
+    left: auto !important;
+}
+
+.dropdown-menu a{
+    color: #EE6123;
+}
+
+.navbar-nav a:hover {
+    text-decoration: underline;
+}
+
+.navbar-brand:hover {
+    text-decoration: underline;
+    background-color: #EE6123;
+}
+
+.navbar-collapse {
+    flex-grow: 0;
+    height: 100%;
+}
+
+.navbar-toggler {
+    padding-bottom: 3px;
+    background-color: #EE6123;
+    color: white;
+    border: 1px solid white;
+    background-image: url("/static/img/menu.svg");
+    background-position: center;
+}
+
+.main {
+    font-size: 16px;
+    color: #EE6123;
+    width: 70%;
+    padding: 2% 15%;
+    box-sizing: unset;
+}
+
+.main a{
+    color: #2b5bd6;
+    text-decoration: underline;
+}
+
+.main a:hover {
+    color: #fffff0;
+    background-color: #2b5bd6;
+}
+
+.centered {
+    display: flex;
+    justify-content: center;
+}
+
+.logout {
+    font-size: 1em;
+}
+
+.messages {
+    margin-bottom: 25px;
+}
+
+
+pre, code {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 16px;
+    color: #2b5bd6;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    font-family: 'Roboto Mono', monospace;
+    display: block;
+    font-weight: bold;
+}
+
+input, button{
+    font-family: 'Roboto Mono', monospace;
+    font-size: 16px;
+    color: #2b5bd6;
+    border: #2b5bd6 2px solid;
+    padding: 4px;
+}
+
+label {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 16px;
+    color: #2b5bd6;
+    padding: 4px;
+}
+
+@media (max-width: 576px) {
+
+    .main{
+        width: 75%;
+        padding: 2% 15%;
+        overflow-x: hidden;
+        max-width: 100%;
+
+    }
+    input{
+        width: 100%;
+    }
+}

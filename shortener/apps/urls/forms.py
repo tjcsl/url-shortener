@@ -11,7 +11,7 @@ class URLForm(forms.ModelForm):
 
     class Meta:
         model = URL
-        fields = ['slug', 'url']
+        fields = ('slug', 'url')
 
     def clean(self):
         cd = self.cleaned_data
