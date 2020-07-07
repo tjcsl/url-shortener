@@ -1,0 +1,14 @@
+version: '3'
+services:
+  shortener_postgres:
+    image: postgres:latest
+    ports:
+    - "5432:5432"
+    environment:
+    - POSTGRES_DB=shortener
+    - POSTGRES_USER=shortener
+    - POSTGRES_PASSWORD=pwd
+    volumes:
+    - "shortener_pgdata:/var/lib/postgresql/data"
+volumes:
+  shortener_pgdata:
