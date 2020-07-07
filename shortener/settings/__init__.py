@@ -92,8 +92,8 @@ SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 
 
 LOGIN_URL = "auth:login"
-LOGIN_REDIRECT_URL = "games:upload"
-LOGOUT_REDIRECT_URL = "auth:index"
+LOGIN_REDIRECT_URL = "urls:create"
+LOGOUT_REDIRECT_URL = "auth:login"
 
 SESSION_SAVE_EVERY_REQUEST = True
 

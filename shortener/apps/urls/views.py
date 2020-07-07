@@ -1,21 +1,15 @@
 from django.contrib import messages
 from django.urls import reverse_lazy
-from django.views.generic import RedirectView
 from django.views.generic.edit import FormView
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 
 from .models import URL
 from .forms import URLForm
 
 
-class URLRedirectView(RedirectView):
-
-    permanent = False
-    query_string = True
-
-    def get_redirect_url(self, *args, **kwargs):
-        url = get_object_or_404(URL, kwargs['slug'])
-        return super().get_redirect_url(url=url.url)
+def redirect_view(request, slug):
+    url = get_object_or_404(URL, slug=slug)
+    return redirect(url.url)
 
 
 class CreateView(FormView):
@@ -24,8 +18,10 @@ class CreateView(FormView):
     success_url = reverse_lazy("urls:create")
 
     def form_valid(self, form):
-        print(form)
-        host = f"{self.request.is_secure() and 'https' or 'http'}://{self.request.get_host()}/{form.cleaned_data['slug']}"
+        url = form.save(commit=False)
+        url.created_by = self.request.user
+        url.save()
+        host = f"{self.request.is_secure() and 'https' or 'http'}://{self.request.get_host()}/{url.slug}"
         messages.success(self.request, f"Successfully created short URL: {host}", extra_tags="success")
         return super().form_valid(form)
 

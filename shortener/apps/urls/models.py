@@ -16,6 +16,9 @@ class URL(models.Model):
             models.UniqueConstraint(fields=["slug"], name="unique_slug")
         ]
 
+    def clean(self):
+        self.validate_unique()
+
     def __str__(self):
         return f"tiny.tjhsst.edu/{self.slug} -> {self.url}"
 

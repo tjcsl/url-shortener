@@ -5,10 +5,20 @@
     <title>Create</title>
 </head>
 <body>
+{% for message in messages %}
+    {{ message }}
+{% empty %}
+{% endfor %}
 <form action="{% url 'urls:create' %}" method="post">
     {% csrf_token %}
-{{ form.as_p }}
-<input type="submit">
+    {{ form.slug.label }}
+    {{ form.slug }}
+    <br>
+    <br>
+    {{ form.url.label }}
+    {{ form.url }}
+    <br><br>
+    <input type="submit">
 </form>
 </body>
 </html>
