@@ -1,6 +1,4 @@
 Hello {{ url.created_by }}, the shortened URL you created for {{ url.url }} has now been deleted
-You can resubmit a request for the same URL at {{ host }}
-If you believe this was a mistake or want to know the reason why your request was denied forward this email
-to {{ dev_email }} and include any questions you have.
+You can resubmit a request for the same URl, but it will have to be reapproved.
 If you have any questions feel free to email {{ dev_email }}
 {% include "emails/footer.txt" %}
