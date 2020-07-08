@@ -16,9 +16,6 @@ apt -y install python3
 apt -y install libssl-dev
 apt -y install python3-pip python3-venv python3-virtualenv pipenv
 
-# Install firejail
-apt install -y firejail
-
 # Install Redis
 apt install -y redis-server
 systemctl enable --now redis-server
