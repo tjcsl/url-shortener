@@ -19,6 +19,7 @@
                         <th>URL</th>
                         <th>Short URL</th>
                         <th>Destination URL</th>
+                        <th>Active?</th>
                         <th>Delete?</th>
                     </tr>
                 </thead>
@@ -33,6 +34,9 @@
                         </td>
                         <td>
                             <a href="{{ url.url }}">{{ url.url }}</a>
+                        </td>
+                        <td>
+                            {{ url.approved|yesno:"URL Active,Not Approved" }}
                         </td>
                         <td>
                             <a href="{% url 'urls:delete' url.id %}">Delete URL</a>

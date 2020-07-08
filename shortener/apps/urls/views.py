@@ -49,7 +49,23 @@ class URLDeleteView(DeleteView):
 @login_required
 def create(request):
     if request.method == "POST":
-        pass
+        form = URLForm(request.POST)
+        if form.is_valid():
+            url = form.save(commit=False)
+            url.created_by = request.user
+            host = f"{request.is_secure() and 'https' or 'http'}://{request.get_host()}/{url.slug}"
+            if request.user.has_management_permission:
+                messages.success(request, mark_safe(f"Successfully created short URL at <a href=\"{url.url}\">{host}</a>"))
+                url.approved = True
+            else:
+                messages.success(request, mark_safe(f"Successfully requested URL shortening, awaiting approval."))
+                messages.success(request, mark_safe(f"If approved short URL <a href=\"{host}\">{host}</a> will redirect to destination"))
+                url.approved = False
+            url.save()
+        else:
+            for errors in form.errors.get_json_data().values():
+                for error in errors:
+                    messages.error(request, error["message"], extra_tags="danger")
     return render(request, "urls/create.html", {"form": URLForm()})
 
 
@@ -66,8 +82,11 @@ def requests(request):
             for errors in form.errors.get_json_data().values():
                 for error in errors:
                     messages.error(request, error["message"], extra_tags="danger")
-        return redirect("urls:requests")
     page_obj = Paginator(URL.objects.filter(approved=False).order_by("-created_at"), 10).get_page(
         request.GET.get("page")
     )
     return render(request, "urls/requests.html", {"page_obj": page_obj, "form": URLApprovalForm()})
+
+
+def help(request):
+    return render(request, "urls/help.html")
