@@ -7,3 +7,8 @@ tippy("#slug-help", {
     content: 'Custom url ending. If empty a randomly generated slug will be used',
     placement: 'right',
 })
+
+tippy("#description-help", {
+    content: 'Provide a small description to justify why this URL shortening is necessary',
+    placement: 'right',
+})

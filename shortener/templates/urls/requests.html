@@ -1,31 +1,33 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Tiny: All URLs{% endblock %}
+{% block title %}Tiny: Requests{% endblock %}
 {% block head %}
     <style>
         .pagination li{
             margin: 0 5px;
         }
     </style>
+    <script src="{% static 'js/urls/requests.js' %}" type="text/javascript"></script>
 {% endblock %}
 {% block main %}
     {% if not page_obj %}
-        <h5>You have not created any URLs yet</h5>
+        <h5>No URL Requests Submitted Yet</h5>
     {% else %}
         <div class="table-responsive">
             <table class="table table-hover table-bordered">
                 <thead>
                     <tr>
-                        <th>URL</th>
                         <th>Short URL</th>
                         <th>Destination URL</th>
-                        <th>Delete?</th>
+                        <th>Created By</th>
+                        <th>Description</th>
+                        <th>Approve?</th>
+                        <th>Deny?</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for url in page_obj %}
                     <tr>
-                        <td>{{ url.id }}</td>
                         <td>
                             <a href="{{ request.is_secure|yesno:"https,http" }}://{{ request.get_host }}/{{ url.slug }}">
                                {{ request.is_secure|yesno:"https,http" }}://{{ request.get_host }}/{{ url.slug }}
@@ -35,7 +37,16 @@
                             <a href="{{ url.url }}">{{ url.url }}</a>
                         </td>
                         <td>
-                            <a href="{% url 'urls:delete' url.id %}">Delete URL</a>
+                            {{ url.created_by }}
+                        </td>
+                        <td>
+                            {{ url.description }}
+                        </td>
+                        <td>
+                            <input type="checkbox" class="url-approve" id="{{ url.id }}">
+                        </td>
+                        <td>
+                            <input type="checkbox" class="url-deny" id="{{ url.id }}">
                         </td>
                     </tr>
                     {% endfor %}
@@ -54,5 +65,11 @@
                 </ul>
             {% endif %}
         </div>
+        <form action="{% url "urls:requests" %}" method="post">
+            {% csrf_token %}
+            {{ form.approved }}
+            {{ form.denied }}
+            <input type="submit" id="approval-submit">
+        </form>
     {% endif %}
 {% endblock %}

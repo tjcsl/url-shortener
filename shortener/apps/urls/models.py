@@ -13,6 +13,9 @@ class URL(models.Model):
     created_at = models.DateTimeField(default=now)
     created_by = models.ForeignKey(get_user_model(), on_delete=models.PROTECT, related_name="urls")
 
+    approved = models.BooleanField(default=False)
+    description = models.CharField(max_length=2000, default="")
+
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["slug"], name="unique_slug")

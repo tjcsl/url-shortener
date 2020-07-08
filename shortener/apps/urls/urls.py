@@ -6,8 +6,9 @@ from . import views
 app_name = "urls"
 
 urlpatterns = [
-    path("", login_required(views.CreateView.as_view()), name="create"),
+    path("", views.create, name="create"),
     path("list/", login_required(views.URLListView.as_view()), name="list"),
     path("delete/<pk>/", login_required(views.URLDeleteView.as_view()), name="delete"),
+    path("requests/", views.requests, name="requests"),
     path("<slug:slug>/", views.redirect_view),
 ]

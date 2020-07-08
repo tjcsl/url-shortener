@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Tiny: Unapproved URL{% endblock %}
+{% block main %}
+    <h4>This URL has not been approved by the TJ Computer Systems Lab</h4>
+    <p>
+        Try again later or email <a href="mailto:{{ settings.DEVELOPER_EMAIL }}">{{ settings.DEVELOPER_EMAIL }}</a>
+        if this request is fairly urgent.
+    </p>
+{% endblock %}

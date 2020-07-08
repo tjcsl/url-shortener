@@ -1,19 +1,26 @@
 from django.contrib import messages
 from django.urls import reverse_lazy
+from django.core.paginator import Paginator
 from django.utils.safestring import mark_safe
 from django.views.generic.list import ListView
-from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import FormView, DeleteView
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .models import URL
-from .forms import URLForm
+from .forms import URLForm, URLApprovalForm
+
+from ..auth.decorators import management_only
 
 
 def redirect_view(request, slug):
     url = get_object_or_404(URL, slug=slug)
-    url.visits += 1
-    url.save(update_fields=["visits"])
-    return redirect(url.url)
+    if url.approved:
+        url.visits += 1
+        url.save(update_fields=["visits"])
+        return redirect(url.url)
+    else:
+        return render(request, 'urls/not_approved.html')
 
 
 class URLListView(ListView):
@@ -40,22 +47,27 @@ class URLDeleteView(DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-class CreateView(FormView):
-    form_class = URLForm
-    template_name = 'urls/create.html'
-    success_url = reverse_lazy("urls:create")
+@login_required
+def create(request):
+    if request.method == "POST":
+        pass
+    return render(request, "urls/create.html", {"form": URLForm()})
 
-    def form_valid(self, form):
-        url = form.save(commit=False)
-        url.created_by = self.request.user
-        url.save()
-        host = f"{self.request.is_secure() and 'https' or 'http'}://{self.request.get_host()}/{url.slug}"
-        messages.success(self.request, mark_safe(f"Successfully created short URL: <a href=\"{host}\">{host}</a>"), extra_tags="success")
-        return super().form_valid(form)
 
-    def form_invalid(self, form):
-        for errors in form.errors.get_json_data().values():
-            for error in errors:
-                messages.error(self.request, error["message"], extra_tags="danger")
+@management_only
+def requests(request):
+    if request.method == "POST":
+        form = URLApprovalForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            cd['approved'].update(approved=True)
+            cd['denied'].delete()
+            messages.success(request, "Successfully updated requests", extra_tags="success")
+        else:
+            for errors in form.errors.get_json_data().values():
+                for error in errors:
+                    messages.error(request, error["message"], extra_tags="danger")
+        return redirect("urls:requests")
+    page_obj = Paginator(URL.objects.filter(approved=False).order_by('-created_at'), 10).get_page(request.GET.get("page"))
+    return render(request, "urls/requests.html", {'page_obj': page_obj, 'form': URLApprovalForm()})
 
-        return super().form_invalid(form)

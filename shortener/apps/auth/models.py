@@ -7,10 +7,11 @@ class User(AbstractUser):
 
     is_teacher = models.BooleanField(default=False, null=False)
     is_student = models.BooleanField(default=True, null=False)
+    is_admin = models.BooleanField(default=False, null=False)
 
     @property
     def has_management_permission(self) -> bool:
-        return self.is_teacher or self.is_staff or self.is_superuser
+        return self.is_teacher or self.is_admin or self.is_staff or self.is_superuser
 
     @property
     def short_name(self):

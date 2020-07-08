@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load users %}
 {% block title %}Tiny: Shorten URL{% endblock %}
 {% block main %}
     <form action="{% url 'urls:create' %}" method="post">
@@ -14,6 +15,15 @@
             {{ form.url }}
             <i class="fa fa-question-circle" id="url-help"></i>
         </div>
-        <input type="submit" value="Shorten URL">
+        <div class="form-group">
+            <label>{{ form.description.label }}:</label>
+            {{ form.description }}
+            <i class="fa fa-question-circle" id="description-help"></i>
+        </div>
+        {% if user|has_management_permissions %}
+            <input type="submit" value="Shorten URL">
+        {% else %}
+            <input type="submit" value="Request shortened URL">
+        {% endif %}
     </form>
 {% endblock %}
