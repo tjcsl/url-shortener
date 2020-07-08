@@ -1,6 +1,7 @@
 from nanoid import generate
 
 from django import forms
+from django.conf import settings
 from django.core.exceptions import ValidationError
 
 from .models import URL
@@ -17,7 +18,7 @@ class URLForm(forms.ModelForm):
     def clean(self):
         cd = self.cleaned_data
         if "slug" not in cd or not cd["slug"]:
-            cd["slug"] = generate(size=15)
+            cd["slug"] = generate(size=settings.DEFAULT_SLUG_LENGTH)
 
 
 class URLApprovalForm(forms.Form):

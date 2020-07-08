@@ -109,6 +109,9 @@ STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "serve")
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
+# Shortener
+DEFAULT_SLUG_LENGTH = 10  # characters
+
 
 DEVELOPER_EMAIL = "syadmins@tjhsst.edu"
 
