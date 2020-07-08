@@ -1,16 +1,15 @@
 from django.contrib import messages
-from django.urls import reverse_lazy
-from django.core.paginator import Paginator
-from django.utils.safestring import mark_safe
-from django.views.generic.list import ListView
 from django.contrib.auth.decorators import login_required
-from django.views.generic.edit import FormView, DeleteView
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
-
-from .models import URL
-from .forms import URLForm, URLApprovalForm
+from django.urls import reverse_lazy
+from django.utils.safestring import mark_safe
+from django.views.generic.edit import DeleteView, FormView
+from django.views.generic.list import ListView
 
 from ..auth.decorators import management_only
+from .forms import URLApprovalForm, URLForm
+from .models import URL
 
 
 def redirect_view(request, slug):
@@ -20,7 +19,7 @@ def redirect_view(request, slug):
         url.save(update_fields=["visits"])
         return redirect(url.url)
     else:
-        return render(request, 'urls/not_approved.html')
+        return render(request, "urls/not_approved.html")
 
 
 class URLListView(ListView):
@@ -57,17 +56,18 @@ def create(request):
 @management_only
 def requests(request):
     if request.method == "POST":
-        form = URLApprovalForm(request.POST)
+        form = URLApprovalForm(data=request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            cd['approved'].update(approved=True)
-            cd['denied'].delete()
+            cd["approved"].update(approved=True)
+            cd["denied"].delete()
             messages.success(request, "Successfully updated requests", extra_tags="success")
         else:
             for errors in form.errors.get_json_data().values():
                 for error in errors:
                     messages.error(request, error["message"], extra_tags="danger")
         return redirect("urls:requests")
-    page_obj = Paginator(URL.objects.filter(approved=False).order_by('-created_at'), 10).get_page(request.GET.get("page"))
-    return render(request, "urls/requests.html", {'page_obj': page_obj, 'form': URLApprovalForm()})
-
+    page_obj = Paginator(URL.objects.filter(approved=False).order_by("-created_at"), 10).get_page(
+        request.GET.get("page")
+    )
+    return render(request, "urls/requests.html", {"page_obj": page_obj, "form": URLApprovalForm()})

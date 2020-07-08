@@ -12,6 +12,5 @@ window.onload = function () {
         })
         $("#id_approved").val(approved);
         $("#id_denied").val(denied);
-
-    })
+    });
 }

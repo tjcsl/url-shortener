@@ -1,6 +1,6 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.timezone import now
-from django.contrib.auth import get_user_model
 
 
 class URL(models.Model):
@@ -17,9 +17,7 @@ class URL(models.Model):
     description = models.CharField(max_length=2000, default="")
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=["slug"], name="unique_slug")
-        ]
+        constraints = [models.UniqueConstraint(fields=["slug"], name="unique_slug")]
 
     def clean(self):
         self.validate_unique()
