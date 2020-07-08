@@ -1,5 +1,7 @@
 import os
 
+from celery.schedules import crontab
+
 DEBUG = True
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = "*-fuslvu#e=#8+5)o9e+y_#vo$wu8=gx@b9v*yp!e_p%0afvr9"
@@ -18,6 +20,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'django_celery_results',
     "shortener.apps.auth.apps.AuthConfig",
     "shortener.apps.urls.apps.UrlsConfig",
 ]
@@ -109,11 +112,33 @@ STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "serve")
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
+# Celery
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_BROKER_URL = "redis://localhost:6379/1"
+CELERY_TIMEZONE = "America/New_York"
+CELERY_BEAT_SCHEDULE = {
+    "delete-old-games": {
+        "task": "shortener.apps.urls.tasks.delete_old_urls",
+        "schedule": crontab(month_of_year=6),
+        "args": (),
+    }
+}
+
 # Shortener
 DEFAULT_SLUG_LENGTH = 10  # characters
 
 
-DEVELOPER_EMAIL = "syadmins@tjhsst.edu"
+# Mail
+MAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "mail.tjhsst.edu"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_SUBJECT_PREFIX = "[Shortener]"
+EMAIL_FROM = "shortener-noreply@tjhsst.edu"
+FORCE_EMAIL_SEND = True
+DEVELOPER_EMAIL = "sysadmins@tjhsst.edu"
+
 
 try:
     from .secret import *  # noqa

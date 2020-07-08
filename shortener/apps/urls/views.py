@@ -4,12 +4,13 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.safestring import mark_safe
-from django.views.generic.edit import DeleteView, FormView
+from django.views.generic.edit import DeleteView
 from django.views.generic.list import ListView
 
-from ..auth.decorators import management_only
-from .forms import URLApprovalForm, URLForm
 from .models import URL
+from .tasks import send_action_emails
+from .forms import URLApprovalForm, URLForm
+from ..auth.decorators import management_only
 
 
 def redirect_view(request, slug):
@@ -77,6 +78,8 @@ def requests(request):
             cd = form.cleaned_data
             cd["approved"].update(approved=True)
             cd["denied"].delete()
+            send_action_emails.delay(cd["approved"], "approved", "Short URL Request Approved")
+            send_action_emails.delay(cd["denied"], "denied", "Short URL Request Denied")
             messages.success(request, "Successfully updated requests", extra_tags="success")
         else:
             for errors in form.errors.get_json_data().values():
