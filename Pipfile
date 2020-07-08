@@ -24,4 +24,4 @@ autopep8 = "~=1.5.2"
 mypy = "~=0.770"
 
 [requires]
-python_version = "3.8"
+python_version = "3.7"
