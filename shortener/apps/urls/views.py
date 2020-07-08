@@ -86,12 +86,23 @@ def create(request: HttpRequest) -> HttpResponse:
 def requests(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         form = URLApprovalForm(data=request.POST)
+        host = f"{request.is_secure() and 'https' or 'http'}://{request.get_host()}"
         if form.is_valid():
             cd = form.cleaned_data
+            send_action_emails.delay(
+                [x.id for x in cd["approved"]],
+                "approved",
+                "Short URL Request Approved",
+                host,
+            )
+            send_action_emails.delay(
+                [x.id for x in cd["denied"]],
+                "denied",
+                "Short URL Request Denied",
+                host,
+            )
             cd["approved"].update(approved=True)
             cd["denied"].delete()
-            send_action_emails.delay(cd["approved"], "approved", "Short URL Request Approved")
-            send_action_emails.delay(cd["denied"], "denied", "Short URL Request Denied")
             messages.success(request, "Successfully updated requests", extra_tags="success")
         else:
             for errors in form.errors.get_json_data().values():

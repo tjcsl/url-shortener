@@ -1,0 +1,13 @@
+<h4 style="color: #EE6123">
+    Congratulations {{ url.created_by }}! The URL Shortening request you submitted for {{ url.url }} has been approved.
+</h4>
+<h5>
+    Your shortened URL is <a style="color: #2b5bd6" href="{{ host }}/{{ url.slug }}">{{ host }}/{{ url.slug }}</a>.
+</h5>
+<h5>
+    You can view and modify all your shortened URLs <a style="color: #2b5bd6" href="{{ host }}/list">here</a>.
+</h5>
+<h5>
+    If you have any questions feel free to email <a href="mailto:{{ dev_email }}" >{{ dev_email }}</a>
+</h5>
+{% include "emails/footer.html" %}

@@ -1,0 +1,10 @@
+<h4 style="color: #EE6123">
+    Hello {{ url.created_by }}!=, the shortened URL you created for {{ url.url }} has now been deleted
+</h4>
+<h5>
+    You can resubmit a request for the same URL <a style="color: #2b5bd6" href="{{ host }}">here</a>.
+</h5>
+<h5>
+    If you have any questions feel free to email <a href="mailto:{{ dev_email }}" >{{ dev_email }}</a>
+</h5>
+{% include "emails/footer.html" %}

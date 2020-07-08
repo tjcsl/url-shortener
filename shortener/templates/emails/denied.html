@@ -1,0 +1,18 @@
+<h4 style="color: #EE6123">
+    Hello {{ url.created_by }}, the URL shortening request you made for {{ url.url }} has been denied.
+</h4>
+<h5>
+    You requested to have {{ host }}/{{ url.slug }} point to {{ url.url }}. You provided a description of
+    {{ url.description }}
+</h5>
+<h5>
+    If you believe this was a mistake or want to know the reason why your request was denied forward this email
+    to <a href="mailto:{{ dev_email }}">{{ dev_email }}</a> and include any questions you have.
+</h5>
+<h5>
+    You can view and modify all your shortened URLs <a style="color: #2b5bd6" href="{{ host }}/list">here</a>.
+</h5>
+<h5>
+    If you have any questions feel free to email <a href="mailto:{{ dev_email }}" >{{ dev_email }}</a>
+</h5>
+{% include "emails/footer.html" %}

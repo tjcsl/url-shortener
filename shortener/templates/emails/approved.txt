@@ -1,0 +1,5 @@
+Congratulations {{ url.created_by }}! The URL Shortening request you submitted for {{ url.url }} has been approved.
+Your shortened URL is {{ host }}/{{ url.slug }}
+You can view and modify all your shortened URLs at {{ host }}/list/
+If you have any questions feel free to email {{ dev_email }}
+{% include "emails/footer.txt" %}

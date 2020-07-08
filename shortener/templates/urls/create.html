@@ -3,6 +3,28 @@
 {% load users %}
 {% block title %}Tiny: Shorten URL{% endblock %}
 {% block main %}
+    <h3>APPROPIATE CONTENT</h3>
+    <p>
+        TJ students and staff enjoy the privilege of posting creating shortened URLs.
+    </p>
+    <p>
+        With this privilege come responsibilities as outlined below.
+        Shortened URLs are intended for educational purposes only.
+    </p>
+    <p>
+        All URLS residing on the TJHSST domain or subsets must reflect the character and mission of the school and must not violate any rules specified in the Fairfax County&rsquo;s Policies and Regulations or the Student Rights and Responsibilities (SR&amp;R) document.
+        URLs that are used for malicious or unethical purposes will not be tolerated.
+        Creators must not establish links to other pages on the Internet that are in violation of SR&amp;R policies.
+        Violations of the TJHSST Web Guidelines will result in removal of the offending URL from the server.
+        The owner of the site may face further disciplinary action.
+    </p>
+    <p>
+        Any URL that redirects to an inappropriate or unnecessary website will be rejected.
+        Heinous requests will not be tolerated.
+    </p>
+    <p><b>
+        By submitting the form below, you hereby agree to the terms outlined above.
+    </b></p>
     <form action="{% url 'urls:create' %}" method="post">
         {% csrf_token %}
         <div class="form-group">
