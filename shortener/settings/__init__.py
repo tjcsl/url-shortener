@@ -1,6 +1,9 @@
 import os
 
+import sentry_sdk
 from celery.schedules import crontab
+from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
 
 DEBUG = True
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +23,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'django_celery_results',
+    "django_celery_results",
     "shortener.apps.auth.apps.AuthConfig",
     "shortener.apps.urls.apps.UrlsConfig",
 ]
@@ -124,9 +127,30 @@ CELERY_BEAT_SCHEDULE = {
     }
 }
 
+# Logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": True,
+    "formatters": {
+        "verbose": {"format": "{asctime}:{module}:{levelname} {message}", "style": "{"},
+        "simple": {"format": "{levelname} {message}", "style": "{"},
+    },
+    "handlers": {
+        "file": {
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "logs/info.log"),
+            "formatter": "verbose",
+        },
+        "console": {"class": "logging.StreamHandler", "formatter": "simple", },
+    },
+    "loggers": {
+        "django": {"handlers": ["console", "file"], "level": "INFO", "propagate": True, },
+        "shortener": {"handlers": ["console", "file"], "level": "INFO", "propagate": True, },
+    },
+}
+
 # Shortener
 DEFAULT_SLUG_LENGTH = 10  # characters
-
 
 # Mail
 MAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -139,8 +163,14 @@ EMAIL_FROM = "shortener-noreply@tjhsst.edu"
 FORCE_EMAIL_SEND = True
 DEVELOPER_EMAIL = "sysadmins@tjhsst.edu"
 
-
 try:
     from .secret import *  # noqa
 except ImportError:
-    pass
+    DEBUG = True
+    SENTRY_DSN = ""
+
+
+if not DEBUG:
+    sentry_sdk.init(
+        SENTRY_DSN, integrations=[DjangoIntegration(), CeleryIntegration()], send_default_pii=True,
+    )

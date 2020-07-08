@@ -24,9 +24,7 @@ class URLForm(forms.ModelForm):
 class URLApprovalForm(forms.Form):
 
     qs = URL.objects.filter(approved=False)
-    approved = forms.ModelMultipleChoiceField(
-        queryset=qs, required=False
-    )
+    approved = forms.ModelMultipleChoiceField(queryset=qs, required=False)
     denied = forms.ModelMultipleChoiceField(queryset=qs, required=False)
 
     def __init__(self, *args, **kwargs):

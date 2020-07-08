@@ -18,6 +18,9 @@ DATABASES = {
     }
 }
 
+SENTRY_DSN = ""
+
+CELERY_BROKER_URL = "redis://localhost/1"
 
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = False
 SOCIAL_AUTH_ION_KEY = ""

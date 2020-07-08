@@ -1,19 +1,21 @@
+from django.db import models
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.http import HttpRequest, HttpResponse
 from django.utils.safestring import mark_safe
 from django.views.generic.edit import DeleteView
 from django.views.generic.list import ListView
 
+from ..auth.decorators import management_only
+from .forms import URLApprovalForm, URLForm
 from .models import URL
 from .tasks import send_action_emails
-from .forms import URLApprovalForm, URLForm
-from ..auth.decorators import management_only
 
 
-def redirect_view(request, slug):
+def redirect_view(request: HttpRequest, slug: str) -> HttpResponse:
     url = get_object_or_404(URL, slug=slug)
     if url.approved:
         url.visits += 1
@@ -29,7 +31,7 @@ class URLListView(ListView):
     ordering = ["-created_at"]
     template_name = "urls/list.html"
 
-    def get_queryset(self):
+    def get_queryset(self) -> "models.query.QuerySet[URL]":
         return URL.objects.filter(created_by=self.request.user).order_by(*self.ordering)
 
 
@@ -39,16 +41,16 @@ class URLDeleteView(DeleteView):
     success_url = reverse_lazy("urls:list")
     success_message = "Deleted URL successfully"
 
-    def get_queryset(self):
+    def get_queryset(self) -> "models.query.QuerySet[URL]":
         return URL.objects.filter(created_by=self.request.user)
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         messages.success(request, self.success_message, extra_tags="success")
         return super().delete(request, *args, **kwargs)
 
 
 @login_required
-def create(request):
+def create(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         form = URLForm(request.POST)
         if form.is_valid():
@@ -56,11 +58,21 @@ def create(request):
             url.created_by = request.user
             host = f"{request.is_secure() and 'https' or 'http'}://{request.get_host()}/{url.slug}"
             if request.user.has_management_permission:
-                messages.success(request, mark_safe(f"Successfully created short URL at <a href=\"{url.url}\">{host}</a>"))
+                messages.success(
+                    request,
+                    mark_safe(f'Successfully created short URL at <a href="{url.url}">{host}</a>'),
+                )
                 url.approved = True
             else:
-                messages.success(request, mark_safe(f"Successfully requested URL shortening, awaiting approval."))
-                messages.success(request, mark_safe(f"If approved short URL <a href=\"{host}\">{host}</a> will redirect to destination"))
+                messages.success(
+                    request, mark_safe(f"Successfully requested URL shortening, awaiting approval.")
+                )
+                messages.success(
+                    request,
+                    mark_safe(
+                        f'If approved short URL <a href="{host}">{host}</a> will redirect to destination'
+                    ),
+                )
                 url.approved = False
             url.save()
         else:
@@ -71,7 +83,7 @@ def create(request):
 
 
 @management_only
-def requests(request):
+def requests(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         form = URLApprovalForm(data=request.POST)
         if form.is_valid():
@@ -91,5 +103,5 @@ def requests(request):
     return render(request, "urls/requests.html", {"page_obj": page_obj, "form": URLApprovalForm()})
 
 
-def help(request):
+def help(request: HttpRequest) -> HttpResponse:
     return render(request, "urls/help.html")

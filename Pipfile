@@ -11,6 +11,8 @@ gunicorn = "*"
 nanoid = "*"
 celery = "*"
 django-celery-results = "*"
+redis = "*"
+sentry-sdk = "*"
 
 [dev-packages]
 flake8 = "~=3.8.2"
