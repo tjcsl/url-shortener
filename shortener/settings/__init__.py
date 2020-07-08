@@ -1,6 +1,7 @@
 import os
 
 import sentry_sdk
+from django.urls import reverse_lazy
 from celery.schedules import crontab
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -93,14 +94,14 @@ SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.social_auth.load_extra_data",
 )
 SOCIAL_AUTH_ALWAYS_ASSOCIATE = True
-SOCIAL_AUTH_LOGIN_ERROR_URL = "auth:error"
+SOCIAL_AUTH_LOGIN_ERROR_URL = reverse_lazy("auth:error")
 SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 
 
-LOGIN_URL = "auth:login"
-LOGIN_REDIRECT_URL = "urls:create"
-LOGOUT_REDIRECT_URL = "auth:login"
+LOGIN_URL = reverse_lazy("auth:login")
+LOGIN_REDIRECT_URL = reverse_lazy("urls:create")
+LOGOUT_REDIRECT_URL = reverse_lazy("auth:login")
 
 SESSION_SAVE_EVERY_REQUEST = True
 
