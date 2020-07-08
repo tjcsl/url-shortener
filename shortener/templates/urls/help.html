@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Tiny: Help{% endblock %}
+{% block main %}
+    <h3>
+        What is this site?
+    </h3>
+    <p>
+        This is site is like conventional URL shortening sites like <a target="_blank" rel="noopener noreferrer" href="https://bitly.com">bit.ly</a>
+        and <a target="_blank" rel="noopener noreferrer" href="https://tinyurl.com">tinyurl.com</a>.
+    </p>
+    <p>
+        This site is available to all TJHSST students but URL shortening requests must be approved by a
+        sysadmin or another administrator before it becomes active. To create a shortened URL go to the
+        <a href="{% url 'urls:create' %}">Create Page</a> and fill out the form.
+    </p>
+    <p>
+        When filling out the URL shortening form you will have to provide a description. A request is very
+        unlikely to be approved if it is submitted without a description.
+    </p>
+    <p>
+        A "slug" is a sequence of alphanumeric characters that can be used to create a specific short URL instead
+        of a randomly generated short URL. You can specify custom slugs but after a slug is used (by ANY user) it
+        cannot be reused.
+    </p>
+    <p>
+        After submitting a URL shortening request, you will receive an email if your request has been approved or denied
+    </p>
+    <h3>
+        How long are short URLs active for?
+    </h3>
+    <p>
+        Each short URL will be active for 6 months. You will be send an email after 6 months and after your short URL has been deleted.
+        After your URL expires you can resubmit another URL shortening request for the same site.
+    </p>
+{% endblock %}
