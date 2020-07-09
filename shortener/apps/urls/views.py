@@ -90,16 +90,10 @@ def requests(request: HttpRequest) -> HttpResponse:
         if form.is_valid():
             cd = form.cleaned_data
             send_action_emails.delay(
-                [x.id for x in cd["approved"]],
-                "approved",
-                "Short URL Request Approved",
-                host,
+                [x.id for x in cd["approved"]], "approved", "Short URL Request Approved", host,
             )
             send_action_emails.delay(
-                [x.id for x in cd["denied"]],
-                "denied",
-                "Short URL Request Denied",
-                host,
+                [x.id for x in cd["denied"]], "denied", "Short URL Request Denied", host,
             )
             cd["approved"].update(approved=True)
             cd["denied"].delete()

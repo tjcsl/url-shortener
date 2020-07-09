@@ -1,5 +1,5 @@
-from typing import List
 from datetime import timedelta
+from typing import List
 
 from celery import shared_task
 
@@ -11,9 +11,7 @@ from .models import URL
 
 
 @shared_task
-def send_action_emails(
-    url_ids: List[int], action: str, subject: str, host: str = ""
-) -> None:
+def send_action_emails(url_ids: List[int], action: str, subject: str, host: str = "") -> None:
     urls = URL.objects.filter(id__in=url_ids)
     for url in urls:
         email_send(

@@ -1,10 +1,12 @@
 from social_core.backends.oauth import BaseOAuth2
-from social_core.pipeline.user import get_username as social_get_username
 
 
-def get_username(strategy, details, user=None, *args, **kwargs):
-    result = social_get_username(strategy, details, user=user, *args, **kwargs)
-    return result
+def get_user_permissions(backend, user, response, *args, **kwargs):
+    if backend.name == "ion":
+        user.is_admin = response["is_eighth_admin"] or response["is_announcements_admin"]
+        user.is_student = response["is_student"]
+        user.is_teacher = response["is_teacher"]
+        user.save()
 
 
 class IonOauth2(BaseOAuth2):
@@ -17,10 +19,7 @@ class IonOauth2(BaseOAuth2):
     def get_scope(self):
         return ["read"]
 
-    def get_user_details(self, response):
-        profile = self.get_json(
-            "https://ion.tjhsst.edu/api/profile", params={"access_token": response["access_token"]}
-        )
+    def get_user_details(self, profile):
         # fields used to populate/update User model
         return {
             "id": profile["id"],
@@ -33,6 +32,11 @@ class IonOauth2(BaseOAuth2):
             "is_teacher": profile["is_teacher"],
             "is_admin": profile["is_eighth_admin"] or profile["is_announcements_admin"],
         }
+
+    def user_data(self, access_token, *args, **kwargs):
+        return self.get_json(
+            "https://ion.tjhsst.edu/api/profile", params={"access_token": access_token}
+        )
 
     def get_user_id(self, details, response):
         return details["id"]
