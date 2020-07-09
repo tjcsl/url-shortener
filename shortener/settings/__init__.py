@@ -83,14 +83,24 @@ AUTH_USER_MODEL = "authentication.User"
 
 AUTHENTICATION_BACKENDS = ("shortener.apps.auth.oauth.IonOauth2",)
 
-SOCIAL_AUTH_USER_FIELDS = ["username", "first_name", "last_name", "email", "id"]
+SOCIAL_AUTH_USER_FIELDS = [
+    "username",
+    "first_name",
+    "last_name",
+    "email",
+    "id",
+    "is_student",
+    "is_teacher",
+    "is_admin",
+    "is_staff",
+    "is_superuser",
+]
 SOCIAL_AUTH_URL_NAMESPACE = "social"
 SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.social_auth.social_details",
     "social_core.pipeline.social_auth.social_uid",
     "social_core.pipeline.social_auth.auth_allowed",
     "social_core.pipeline.social_auth.social_user",
-    "shortener.apps.auth.oauth.get_user_permissions",
     "social_core.pipeline.social_auth.associate_by_email",
     "social_core.pipeline.user.create_user",
     "social_core.pipeline.social_auth.associate_user",

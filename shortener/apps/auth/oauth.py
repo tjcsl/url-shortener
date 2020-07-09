@@ -1,18 +1,6 @@
 from social_core.backends.oauth import BaseOAuth2
 
 
-def get_user_permissions(backend, user, response, *args, **kwargs):
-    if backend.name == "ion":
-        admin = response["is_eighth_admin"] or response["is_announcements_admin"]
-        teacher = response['is_teacher']
-        user.is_admin = admin
-        user.is_student = response["is_student"]
-        user.is_teacher = teacher
-        user.is_staff = admin or teacher
-        user.is_superuser = admin
-        user.save()
-
-
 class IonOauth2(BaseOAuth2):
     name = "ion"
     AUTHORIZATION_URL = "https://ion.tjhsst.edu/oauth/authorize"
@@ -25,6 +13,7 @@ class IonOauth2(BaseOAuth2):
 
     def get_user_details(self, profile):
         # fields used to populate/update User model
+        admin = profile["is_eighth_admin"] or profile["is_announcements_admin"]
         return {
             "id": profile["id"],
             "username": profile["ion_username"],
@@ -34,7 +23,9 @@ class IonOauth2(BaseOAuth2):
             "email": profile["tj_email"],
             "is_student": profile["is_student"],
             "is_teacher": profile["is_teacher"],
-            "is_admin": profile["is_eighth_admin"] or profile["is_announcements_admin"],
+            "is_admin": admin,
+            "is_staff": admin,
+            "is_superuser": admin,
         }
 
     def user_data(self, access_token, *args, **kwargs):
