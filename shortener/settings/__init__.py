@@ -25,6 +25,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_celery_results",
+    "social_django",
+    "shortener.apps",
     "shortener.apps.auth.apps.AuthConfig",
     "shortener.apps.urls.apps.UrlsConfig",
 ]
