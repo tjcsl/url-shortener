@@ -3,9 +3,13 @@ from social_core.backends.oauth import BaseOAuth2
 
 def get_user_permissions(backend, user, response, *args, **kwargs):
     if backend.name == "ion":
-        user.is_admin = response["is_eighth_admin"] or response["is_announcements_admin"]
+        admin = response["is_eighth_admin"] or response["is_announcements_admin"]
+        teacher = response['is_teacher']
+        user.is_admin = admin
         user.is_student = response["is_student"]
-        user.is_teacher = response["is_teacher"]
+        user.is_teacher = teacher
+        user.is_staff = admin or teacher
+        user.is_superuser = admin
         user.save()
 
 
