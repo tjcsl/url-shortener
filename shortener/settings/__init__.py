@@ -91,7 +91,6 @@ SOCIAL_AUTH_USER_FIELDS = [
     "id",
     "is_student",
     "is_teacher",
-    "is_admin",
     "is_staff",
     "is_superuser",
 ]

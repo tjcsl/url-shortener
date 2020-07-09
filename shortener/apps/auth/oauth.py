@@ -23,7 +23,6 @@ class IonOauth2(BaseOAuth2):
             "email": profile["tj_email"],
             "is_student": profile["is_student"],
             "is_teacher": profile["is_teacher"],
-            "is_admin": admin,
             "is_staff": admin,
             "is_superuser": admin,
         }
