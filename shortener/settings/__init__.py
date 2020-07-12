@@ -15,7 +15,6 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
     "tiny.tjhsst.edu",
-    "tiny.csl.tjhsst.edu",
 ]
 
 INSTALLED_APPS = [
