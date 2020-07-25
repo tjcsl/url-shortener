@@ -93,10 +93,13 @@ def requests(request: HttpRequest) -> HttpResponse:
                 [x.id for x in cd["approved"]], "approved", "Short URL Request Approved", host,
             )
             send_action_emails.delay(
-                [x.id for x in cd["denied"]], "denied", "Short URL Request Denied", host,
+                [x.id for x in cd["denied"]],
+                "denied",
+                "Short URL Request Denied",
+                host,
+                delete_after=True,
             )
             cd["approved"].update(approved=True)
-            cd["denied"].delete()
             messages.success(request, "Successfully updated requests", extra_tags="success")
         else:
             for errors in form.errors.get_json_data().values():

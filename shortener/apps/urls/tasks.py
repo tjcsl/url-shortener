@@ -11,7 +11,9 @@ from .models import URL
 
 
 @shared_task
-def send_action_emails(url_ids: List[int], action: str, subject: str, host: str = "") -> None:
+def send_action_emails(
+    url_ids: List[int], action: str, subject: str, host: str = "", delete_after: bool = False
+) -> None:
     urls = URL.objects.filter(id__in=url_ids)
     for url in urls:
         email_send(
@@ -21,12 +23,13 @@ def send_action_emails(url_ids: List[int], action: str, subject: str, host: str 
             subject,
             [url.created_by.email],
         )
+    if delete_after:
+        urls.delete()
 
 
 @shared_task
 def delete_old_urls() -> None:
     qs = URL.objects.filter(created_at__lt=now() - timedelta(weeks=26))
     send_action_emails(
-        [x.id for x in qs], "deletion", "Short URL Deleted"
-    )  # Must be regular function call b/c objects get deleted afterwards
-    qs.delete()
+        [x.id for x in qs], "deletion", "Short URL Deleted", delete_after=True
+    )
