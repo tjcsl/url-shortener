@@ -67,7 +67,7 @@ def create(request: HttpRequest) -> HttpResponse:
                 url.approved = True
             else:
                 messages.success(
-                    request, mark_safe(f"Successfully requested URL shortening, awaiting approval.")
+                    request, mark_safe("Successfully requested URL shortening, awaiting approval.")
                 )
                 messages.success(
                     request,

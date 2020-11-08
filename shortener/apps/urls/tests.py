@@ -72,7 +72,9 @@ class URLTests(ShortnerTestCase):
             },
         )
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(URL.objects.filter(slug="sysadmins", created_by=user, approved=True)))
+        self.assertEqual(
+            1, len(URL.objects.filter(slug="sysadmins", created_by=user, approved=True))
+        )
 
         user = self.login(username="2020awilliam", make_student=True)
 
@@ -99,14 +101,19 @@ class URLTests(ShortnerTestCase):
             slug="sysadmins", url="https://sysadmins.tjhsst.edu", created_by=student, approved=False
         )
         url2 = URL.objects.create(
-            slug="sysadmins2", url="https://sysadmins.tjhsst.edu", created_by=student, approved=False
+            slug="sysadmins2",
+            url="https://sysadmins.tjhsst.edu",
+            created_by=student,
+            approved=False,
         )
 
         response = self.client.get(reverse("urls:requests"), follow=True)
         self.assertEqual(200, response.status_code)
         self.assertEqual(2, len(response.context["page_obj"]))
 
-        response = self.client.post(reverse("urls:requests"), follow=True, data={"approved": [url.id, url2.id]})
+        response = self.client.post(
+            reverse("urls:requests"), follow=True, data={"approved": [url.id, url2.id]}
+        )
         self.assertEqual(200, response.status_code)
         self.assertEqual(1, len(URL.objects.filter(slug="sysadmins", approved=True)))
         self.assertEqual(1, len(URL.objects.filter(slug="sysadmins2", approved=True)))
