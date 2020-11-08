@@ -2,7 +2,6 @@ from datetime import timedelta
 from typing import List
 
 from celery import shared_task
-
 from django.conf import settings
 from django.utils.timezone import now
 
@@ -30,6 +29,4 @@ def send_action_emails(
 @shared_task
 def delete_old_urls() -> None:
     qs = URL.objects.filter(created_at__lt=now() - timedelta(weeks=26))
-    send_action_emails(
-        [x.id for x in qs], "deletion", "Short URL Deleted", delete_after=True
-    )
+    send_action_emails([x.id for x in qs], "deletion", "Short URL Deleted", delete_after=True)

@@ -1,4 +1,3 @@
-
 [MASTER]
 init-hook=import sys; sys.path.insert(0, 'shortener/apps')
 
@@ -9,6 +8,7 @@ disable=missing-docstring,no-else-return,no-else-raise,bad-continuation,duplicat
 max-line-length=100
 ignore=media,migrations,submissions
 ignore-patterns=secret*
+django-settings-module=shortener.settings
 
 good-names=i,j,j,ex,ch,fd,T,_
 

@@ -25,14 +25,16 @@ def redirect_view(request: HttpRequest, slug: str) -> HttpResponse:
         return render(request, "urls/not_approved.html")
 
 
-class URLListView(ListView):
+class URLListView(ListView):  # pylint: disable=too-many-ancestors
     model = URL
     paginate_by = 10
     ordering = ["-created_at"]
     template_name = "urls/list.html"
 
-    def get_queryset(self) -> "models.query.QuerySet[URL]":
-        return URL.objects.filter(created_by=self.request.user).order_by(*self.ordering)
+    def get_queryset(self) -> models.query.QuerySet[URL]:
+        return URL.objects.filter(created_by=self.request.user).order_by(  # type: ignore
+            *self.ordering
+        )
 
 
 class URLDeleteView(DeleteView):
@@ -41,8 +43,8 @@ class URLDeleteView(DeleteView):
     success_url = reverse_lazy("urls:list")
     success_message = "Deleted URL successfully"
 
-    def get_queryset(self) -> "models.query.QuerySet[URL]":
-        return URL.objects.filter(created_by=self.request.user)
+    def get_queryset(self) -> models.query.QuerySet[URL]:
+        return URL.objects.filter(created_by=self.request.user)  # type: ignore
 
     def delete(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         messages.success(request, self.success_message, extra_tags="success")
@@ -57,7 +59,7 @@ def create(request: HttpRequest) -> HttpResponse:
             url = form.save(commit=False)
             url.created_by = request.user
             host = f"{request.is_secure() and 'https' or 'http'}://{request.get_host()}/{url.slug}"
-            if request.user.has_management_permission:
+            if request.user.has_management_permission:  # type: ignore
                 messages.success(
                     request,
                     mark_safe(f'Successfully created short URL at <a href="{url.url}">{host}</a>'),
@@ -70,7 +72,8 @@ def create(request: HttpRequest) -> HttpResponse:
                 messages.success(
                     request,
                     mark_safe(
-                        f'If approved short URL <a href="{host}">{host}</a> will redirect to destination'
+                        f'If approved short URL <a href="{host}">{host}</a> '
+                        f"will redirect to destination"
                     ),
                 )
                 url.approved = False
@@ -88,18 +91,21 @@ def requests(request: HttpRequest) -> HttpResponse:
         form = URLApprovalForm(data=request.POST)
         host = f"{request.is_secure() and 'https' or 'http'}://{request.get_host()}"
         if form.is_valid():
-            cd = form.cleaned_data
+            cleaned_data = form.cleaned_data
             send_action_emails.delay(
-                [x.id for x in cd["approved"]], "approved", "Short URL Request Approved", host,
+                [x.id for x in cleaned_data["approved"]],
+                "approved",
+                "Short URL Request Approved",
+                host,
             )
             send_action_emails.delay(
-                [x.id for x in cd["denied"]],
+                [x.id for x in cleaned_data["denied"]],
                 "denied",
                 "Short URL Request Denied",
                 host,
                 delete_after=True,
             )
-            cd["approved"].update(approved=True)
+            cleaned_data["approved"].update(approved=True)
             messages.success(request, "Successfully updated requests", extra_tags="success")
         else:
             for errors in form.errors.get_json_data().values():
@@ -111,5 +117,5 @@ def requests(request: HttpRequest) -> HttpResponse:
     return render(request, "urls/requests.html", {"page_obj": page_obj, "form": URLApprovalForm()})
 
 
-def help(request: HttpRequest) -> HttpResponse:
+def help_view(request: HttpRequest) -> HttpResponse:
     return render(request, "urls/help.html")

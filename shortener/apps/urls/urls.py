@@ -10,6 +10,6 @@ urlpatterns = [
     path("list/", login_required(views.URLListView.as_view()), name="list"),
     path("delete/<pk>/", login_required(views.URLDeleteView.as_view()), name="delete"),
     path("requests/", views.requests, name="requests"),
-    path("help/", views.help, name="help"),
+    path("help/", views.help_view, name="help"),
     path("<slug:slug>/", views.redirect_view),
 ]

@@ -1,13 +1,17 @@
 import os
+import sys
+from typing import Dict, List
 
 import sentry_sdk
 from celery.schedules import crontab
+from django.urls import reverse_lazy
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 
-from django.urls import reverse_lazy
-
 DEBUG = True
+
+TESTING = "test" in sys.argv
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = "*-fuslvu#e=#8+5)o9e+y_#vo$wu8=gx@b9v*yp!e_p%0afvr9"
 
@@ -71,7 +75,11 @@ DATABASES = {
     }
 }
 
-AUTH_PASSWORD_VALIDATORS = [
+if TESTING:
+    DATABASES["default"]["ENGINE"] = "django.db.backends.sqlite3"
+    DATABASES["default"]["NAME"] = ":memory:"
+
+AUTH_PASSWORD_VALIDATORS: List[Dict[str, str]] = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
@@ -80,7 +88,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = "authentication.User"
 
-AUTHENTICATION_BACKENDS = ("shortener.apps.auth.oauth.IonOauth2",)
+AUTHENTICATION_BACKENDS: List[str] = ["shortener.apps.auth.oauth.IonOauth2"]
 
 SOCIAL_AUTH_USER_FIELDS = [
     "username",
@@ -153,11 +161,22 @@ LOGGING = {
             "filename": os.path.join(BASE_DIR, "logs/info.log"),
             "formatter": "verbose",
         },
-        "console": {"class": "logging.StreamHandler", "formatter": "simple", },
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
     },
     "loggers": {
-        "django": {"handlers": ["console", "file"], "level": "INFO", "propagate": True, },
-        "shortener": {"handlers": ["console", "file"], "level": "INFO", "propagate": True, },
+        "django": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": True,
+        },
+        "shortener": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": True,
+        },
     },
 }
 
@@ -184,5 +203,7 @@ except ImportError:
 
 if not DEBUG:
     sentry_sdk.init(
-        SENTRY_DSN, integrations=[DjangoIntegration(), CeleryIntegration()], send_default_pii=True,
+        SENTRY_DSN,
+        integrations=[DjangoIntegration(), CeleryIntegration()],
+        send_default_pii=True,
     )

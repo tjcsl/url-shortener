@@ -14,7 +14,7 @@ def email_send(
     msg = EmailMultiAlternatives(subject, text_content, settings.EMAIL_FROM, emails, headers={})
     msg.attach_alternative(html_content, "text/html")
 
-    if not settings.DEBUG or settings.FORCE_EMAIL_SEND:
+    if (not settings.DEBUG or settings.FORCE_EMAIL_SEND) and not settings.TESTING:
         msg.send()
 
     return msg

@@ -1,7 +1,7 @@
 from social_core.backends.oauth import BaseOAuth2
 
 
-class IonOauth2(BaseOAuth2):
+class IonOauth2(BaseOAuth2):  # pylint: disable=abstract-method
     name = "ion"
     AUTHORIZATION_URL = "https://ion.tjhsst.edu/oauth/authorize"
     ACCESS_TOKEN_URL = "https://ion.tjhsst.edu/oauth/token"
@@ -11,18 +11,18 @@ class IonOauth2(BaseOAuth2):
     def get_scope(self):
         return ["read"]
 
-    def get_user_details(self, profile):
+    def get_user_details(self, response):
         # fields used to populate/update User model
-        admin = profile["is_eighth_admin"] or profile["is_announcements_admin"]
+        admin = response["is_eighth_admin"] or response["is_announcements_admin"]
         return {
-            "id": profile["id"],
-            "username": profile["ion_username"],
-            "first_name": profile["first_name"],
-            "last_name": profile["last_name"],
-            "full_name": profile["full_name"],
-            "email": profile["tj_email"],
-            "is_student": profile["is_student"],
-            "is_teacher": profile["is_teacher"],
+            "id": response["id"],
+            "username": response["ion_username"],
+            "first_name": response["first_name"],
+            "last_name": response["last_name"],
+            "full_name": response["full_name"],
+            "email": response["tj_email"],
+            "is_student": response["is_student"],
+            "is_teacher": response["is_teacher"],
             "is_staff": admin,
             "is_superuser": admin,
         }

@@ -8,4 +8,4 @@ for cmd in flake8 isort mypy pylint; do
     fi
 done
 
-flake8 shortener && isort --recursive --check shortener && mypy shortener && pylint shortener
+flake8 shortener && isort --check shortener && mypy shortener && pylint shortener
