@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 
@@ -90,6 +91,43 @@ class URLTests(ShortnerTestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(1, len(URL.objects.filter(slug="test", created_by=user, approved=False)))
 
+        # Test an invalid entry.
+        response = self.client.post(
+            reverse("urls:create"),
+            follow=True,
+            data={
+                "slug": "test1",
+                "url": "https://examplecom",
+                "description": "Test",
+            },
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(URL.objects.filter(slug="test1")))
+
+        self.assertGreaterEqual(1, len(list(response.context["messages"])))
+
+        # Test creating a URL without specifying a slug.
+        response = self.client.post(
+            reverse("urls:create"),
+            follow=True,
+            data={
+                "url": "https://www.example.com",
+                "description": "Test",
+            },
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(
+            1,
+            len(URL.objects.filter(url="https://www.example.com", created_by=user, approved=False)),
+        )
+        self.assertEqual(
+            settings.DEFAULT_SLUG_LENGTH,
+            len(
+                URL.objects.get(url="https://www.example.com", created_by=user, approved=False).slug
+            ),
+        )
+
     def test_requests_view(self):
         student = self.login(username="2020awilliam", make_student=True)
         self.login(make_teacher=True)
@@ -105,6 +143,16 @@ class URLTests(ShortnerTestCase):
             url="https://sysadmins.tjhsst.edu",
             created_by=student,
             approved=False,
+        )
+
+        # Test an invalid entry.
+        response = self.client.post(
+            reverse("urls:requests"), follow=True, data={"approved": [url.id], "denied": [url.id]}
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertIn(
+            "Cannot approve and deny the same request!",
+            list(map(str, list(response.context["messages"]))),
         )
 
         response = self.client.get(reverse("urls:requests"), follow=True)
