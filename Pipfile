@@ -6,13 +6,13 @@ verify_ssl = true
 [packages]
 amqp = "~=5.0.5"
 celery = "~=5.0.5"
-django = "~=3.1.6"
+django = "~=3.1.7"
 django-celery-results = "~=2.0.1"
 gunicorn = "~=20.0.4"
 nanoid = "~=2.0.0"
 psycopg2 = "~=2.8.6"
 redis = "~=3.5.3"
-sentry-sdk = "~=0.20.2"
+sentry-sdk = "~=0.20.3"
 social-auth-app-django = "~=4.0.0"
 vine = "~=5.0.0"
 
@@ -23,11 +23,12 @@ coverage = "~=5.4"
 django-stubs = "~=1.7.0"
 flake8 = "~=3.8.4"
 isort = "~=5.7.0"
-mypy = "~=0.800"
-pylint = "~=2.6.0"
+mypy = "~=0.812"
+pylint = "~=2.7.1"
 pylint-django = "~=2.4.2"
 pyyaml = "~=5.4.1"
 typed-ast = "~=1.4.2"  # Required by black, but Pipenv doesn't pull it in correctly on 3.8
+typing-extensions = "~=3.7.4.3"
 
 [requires]
 python_version = "3.7"
