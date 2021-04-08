@@ -6,7 +6,7 @@ verify_ssl = true
 [packages]
 amqp = "~=5.0.5"
 celery = "~=5.0.5"
-django = "~=3.1.7"
+django = "~=3.1.8"
 django-celery-results = "~=2.0.1"
 gunicorn = "~=20.0.4"
 nanoid = "~=2.0.0"
