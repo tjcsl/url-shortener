@@ -13,7 +13,7 @@ class IonOauth2(BaseOAuth2):  # pylint: disable=abstract-method
 
     def get_user_details(self, response):
         # fields used to populate/update User model
-        admin = response["is_eighth_admin"] or response["is_announcements_admin"]
+        admin = response["is_eighth_admin"]
         return {
             "id": response["id"],
             "username": response["ion_username"],
